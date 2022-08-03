@@ -21,6 +21,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.text.input.KeyboardType.Companion.Text
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ShareCompat
 import androidx.core.widget.NestedScrollView
@@ -66,6 +70,12 @@ class PlantDetailFragment : Fragment() {
                         Snackbar.make(root, R.string.added_plant_to_garden, Snackbar.LENGTH_LONG)
                             .show()
                     }
+                }
+            }
+
+            composeView.setContent {
+                MaterialTheme{
+                    PlatDetailDescription()
                 }
             }
 
@@ -144,5 +154,10 @@ class PlantDetailFragment : Fragment() {
 
     interface Callback {
         fun add(plant: Plant?)
+    }
+
+    @Composable
+    fun PlatDetailDescription(){
+        Text("Hello Compose")
     }
 }
