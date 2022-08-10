@@ -22,13 +22,21 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import com.example.compose.rally.ui.accounts.AccountsScreen
+import com.example.compose.rally.ui.bills.BillsScreen
 import com.example.compose.rally.ui.components.RallyTabRow
+import com.example.compose.rally.ui.overview.OverviewScreen
 import com.example.compose.rally.ui.theme.RallyTheme
 
 /**
@@ -47,18 +55,39 @@ class RallyActivity : ComponentActivity() {
 @Composable
 fun RallyApp() {
     RallyTheme {
-        var currentScreen: RallyDestination by remember { mutableStateOf(Overview) }
+        val allScreens = rallyTabRowScreens
+        val navController = rememberNavController()
+        val backstackEntry = navController.currentBackStackEntryAsState()
+        val currentScreen = fromRoute(backstackEntry.value?.destination?.route)
+
         Scaffold(
             topBar = {
                 RallyTabRow(
-                    allScreens = rallyTabRowScreens,
-                    onTabSelected = { screen -> currentScreen = screen },
+                    allScreens = allScreens,
+                    onTabSelected = { screen ->
+                        navController.navigate(screen.route)
+                    },
                     currentScreen = currentScreen
                 )
             }
         ) { innerPadding ->
-            Box(Modifier.padding(innerPadding)) {
-                currentScreen.screen()
+            NavHost(
+                navController = navController,
+                startDestination = Overview.route,
+                modifier = Modifier.padding(innerPadding)
+            ) {
+                composable(Overview.route) {
+                    OverviewScreen(
+                        onClickSeeAllAccounts = { navController.navigate(Accounts.route) },
+                        onClickSeeAllBills = { navController.navigate(Bills.route) }
+                    )
+                }
+                composable(Accounts.route) {
+                    AccountsScreen()
+                }
+                composable(Bills.route) {
+                    BillsScreen()
+                }
             }
         }
     }

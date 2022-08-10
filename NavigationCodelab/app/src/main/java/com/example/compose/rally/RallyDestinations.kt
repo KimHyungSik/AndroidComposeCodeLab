@@ -37,6 +37,16 @@ interface RallyDestination {
     val screen: @Composable () -> Unit
 }
 
+fun fromRoute(route: String?): RallyDestination{
+    return when(route){
+        Overview.route -> {Overview}
+        Accounts.route -> {Accounts}
+        Bills.route -> {Bills}
+        SingleAccount.route -> {SingleAccount}
+        else -> Overview
+    }
+}
+
 /**
  * Rally app navigation destinations
  */
